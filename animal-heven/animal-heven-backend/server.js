@@ -31,6 +31,7 @@ app.use(express.json()) // use .json(), not .urlencoded()
 const animalController = require('./controllers/animals.js');
 app.use('/animals', animalController);
 
+
 ///////////////////////////////////
 // DATABASE
 //////////////////////////////////
