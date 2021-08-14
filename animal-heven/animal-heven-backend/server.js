@@ -1,27 +1,60 @@
-///////////////////////////////////
-////// DEPENDENCIES
-///////////////////////////////////
-const express = require('express');
-
 
 ///////////////////////////////////
-////// CONFIG
+// DEPENDENCIES
+///////////////////////////////////
+//Server 
+const express = require('express')
+//MongoDB 
+const mongoose = require('mongoose')
+
+
+
+///////////////////////////////////
+// CONFIG
 ///////////////////////////////////
 require('dotenv').config()
+const app = express()
+const PORT = process.env.PORT
+const MONGODB_URI = process.env.MONGODB_URI
 
-const app = express ();
+
 
 ///////////////////////////////////
-////// PORT
+// MIDDLEWARE
 ///////////////////////////////////
+app.use(express.json()) // use .json(), not .urlencoded()
+
 
 ///////////////////////////////////
-//////// CONTROLLERS 
+// CONTROLLERS 
 //////////////////////////////////
 const animalController = require('./controllers/animals.js');
-app.use(animalController);
+app.use('/animals', animalController);
 
 ///////////////////////////////////
-//////// LISTENER
+// DATABASE
 //////////////////////////////////
-app.listen(4000, () => console.log( 'Listening to 40000'));
+mongoose.connect(
+    MONGODB_URI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
+    },
+    () => {
+      console.log('the connection with mongod is established at', MONGODB_URI)
+    }
+  )
+
+  mongoose.connection.on('error', err => console.log(err.message + ' is mongod not running?'))
+  mongoose.connection.on('disconnected', () => console.log('mongo disconnected'))
+///////////////////////////////////
+// LISTENER
+//////////////////////////////////
+app.listen(PORT, () => {
+    console.log('🎉🎊', 'Up and running on', PORT, '🎉🎊')
+  })
+
+
+
